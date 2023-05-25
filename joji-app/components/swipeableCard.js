@@ -9,7 +9,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SwipeableCard = ({card}) => {
 
     return (
-        <View>
+        <View style={{backgroundColor:"ffcccc"}}>
             <View style={styles.card}>
                 <Image
                     source={card.uri}
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     image: {
         width: SCREEN_WIDTH - 50,
         height: SCREEN_WIDTH - 50,
-        resizeMode: 'contain',
+        resizeMode: 'cover',
     },
     card: {
         marginTop: 100,

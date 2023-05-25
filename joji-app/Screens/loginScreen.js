@@ -20,7 +20,7 @@ function LoginScreen () {
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#ffcccc',
       justifyContent: 'center',
       alignItems: 'center',
     },
