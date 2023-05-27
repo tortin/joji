@@ -9,7 +9,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SwipeableCard = ({card}) => {
 
     return (
-        <View style={{backgroundColor:"ffcccc"}}>
+        <View>
             <View style={styles.card}>
                 <Image
                     source={card.uri}
@@ -18,11 +18,8 @@ const SwipeableCard = ({card}) => {
                     <Text variant="h3">{card.name}</Text>
                 </View>
                 <View style={styles.badgeContainer}>
-                    {card.subjects.map((subject) => (
-                        <Badge label={subject} style={styles.badge} />
-                    ))}
-                    {card.level.map((level) => (
-                        <Badge label={level} color="purple" style={styles.badge}/>
+                    {card.subjects.map((subject, i) => (
+                        <Badge key={i} label={subject} style={styles.badge} />
                     ))}
                 </View>
             </View>
@@ -49,6 +46,7 @@ const styles = StyleSheet.create({
     card: {
         marginTop: 100,
         borderWidth: 2,
+        backgroundColor: "#ffffff",
     },
     badge: {
         marginHorizontal: 1,
