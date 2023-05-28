@@ -12,8 +12,10 @@ function MatchCard(props) {
                 {props.data.subjects.map((subject, i) => (
                     <Badge key={i} label={subject} style={styles.badge} />
                 ))}
-                <Badge label={props.data.price} color="#DEFFF9" />
-                <Badge label={props.data.location} color="#DEFFF9" />
+                <Badge label={props.data.price} style={styles.badge} />
+                {props.data.locations.map((location, i) => (
+                    <Badge key={i} label={location} style={styles.badge} />
+                ))}
             </View>
             <View style={styles.optionsContainer}>
                 <Pressable style={styles.option}>
@@ -23,7 +25,7 @@ function MatchCard(props) {
                     <Image source={require('../assets/chat.png')} style={styles.optionImage} />
                 </Pressable>
                 <Pressable style={styles.option}>
-                    <Image source={require('../assets/cross.jpg')} style={styles.optionImage} />
+                    <Image source={require('../assets/cross.png')} style={styles.optionImage} />
                 </Pressable>
             </View>
         </View>
@@ -41,7 +43,8 @@ function MatchCard(props) {
         flexWrap: 'wrap',
         alignSelf: 'center',
         marginTop: 8,
-        backgroundColor: "#DEFFF9",
+        backgroundColor: "#fff",
+        borderRadius: 5,
     },
     image: {
         resizeMode: 'cover',
@@ -51,19 +54,17 @@ function MatchCard(props) {
     },
     mainContainer: {
         flex: (1 - SCREEN_HEIGHT * 0.14 / SCREEN_WIDTH) * 0.85,
-        flexDirection: 'column'
-    },
-    badgeContainer: {
-        flex: 3,
+        flexDirection: 'column',
     },
     textContainer: {
         flex: 1,
         alignItems:'center',
     },
     badge: {
-        backgroundColor:"#DEFFF9",
-        borderWidth: 1,
-        marginTop: 2
+        backgroundColor:"#cbefdc",
+        marginTop: 1,
+        width: '90%',
+        alignSelf: 'center'
     },
     optionsContainer: {
         flex: (1 - SCREEN_HEIGHT * 0.14 / SCREEN_WIDTH) * 0.15,
@@ -71,6 +72,7 @@ function MatchCard(props) {
     option: {
         flex: 1,
         justifyContent: 'center',
+        borderWidth: 1,
     },
     optionImage: {
         width: 25,

@@ -9,27 +9,28 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SwipeableCard = ({card}) => {
 
     return (
-        <View>
-            <View style={styles.card}>
-                <Image
-                    source={card.uri}
-                    style={styles.image} />
+        <View style={styles.card}>
+            <Image
+                source={card.uri}
+                style={styles.image} />
+            <View>
                 <View style={styles.nameContainer}>
-                    <Text variant="h3">{card.name}</Text>
+                    <Text style={styles.header}>{card.name}, {card.age}</Text>
                 </View>
+                <Text style={styles.subheader}>Subjects</Text>
                 <View style={styles.badgeContainer}>
                     {card.subjects.map((subject, i) => (
                         <Badge key={i} label={subject} style={styles.badge} />
                     ))}
                 </View>
-            </View>
-            <View style={styles.optionsContainer}>
-                <Pressable>
-                    <Image style={styles.select} source={require('../assets/cross.jpg')}/>
-                </Pressable>
-                <Pressable>
-                    <Image style={styles.select} source={require('../assets/tick.png')} />
-                </Pressable>
+                <Text style={styles.subheader}>Locations</Text>
+                <View style={styles.badgeContainer}>
+                    {card.locations.map((location, i) => (
+                        <Badge key={i} label={location} style={[styles.badge, {backgroundColor:"lightblue"}]} />
+                    ))}
+                </View>
+                <Text style={styles.subheader}>Price</Text>
+                <Text style={styles.price}>{card.price}</Text>
             </View>
         </View>
     )
@@ -39,14 +40,16 @@ export default SwipeableCard;
 
 const styles = StyleSheet.create({
     image: {
-        width: SCREEN_WIDTH - 50,
-        height: SCREEN_WIDTH - 50,
+        width: SCREEN_WIDTH * 0.9,
+        height: SCREEN_WIDTH * 0.9,
         resizeMode: 'cover',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
     },
     card: {
-        marginTop: 100,
-        borderWidth: 2,
         backgroundColor: "#ffffff",
+        borderRadius: 20,
+        height: SCREEN_HEIGHT * 0.65,
     },
     badge: {
         marginHorizontal: 1,
@@ -54,20 +57,29 @@ const styles = StyleSheet.create({
     badgeContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
-        width: SCREEN_WIDTH - 50,
         flexWrap: 'wrap',
         alignItems: 'center',
+        marginVertical: 3,
     },
     nameContainer: {
-        alignItems:"center",
+        marginLeft: 20,
+        marginTop: 10,
     },
-    select: {
-        width: 60,
-        height: 60,
+    header: {
+        fontSize: 32,
+        fontWeight: 500,
     },
-    optionsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        marginTop: 20,
+    subheader: {
+        fontSize: 16,
+        fontWeight: 700,
+        marginTop: 5,
+        alignSelf: 'center',
+    },
+    price: {
+        marginTop: 3,
+        fontSize: 24,
+        fontWeight: 700,
+        alignSelf:'center',
+        
     }
 })

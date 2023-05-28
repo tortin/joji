@@ -5,9 +5,6 @@ import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { Divider } from "@react-native-material/core";
 import { ListItem } from "@react-native-material/core";
 
-
-
-
 function ProfileScreen() {
     return (
         <View style={{backgroundColor:"#ffcccc"}}>
