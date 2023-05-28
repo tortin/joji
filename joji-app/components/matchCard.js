@@ -5,9 +5,10 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 function MatchCard(props) {
+    console.log
     return (
         <View style={styles.container}>
-            <Image style={styles.image} source={props.data.uri} />
+            <Image style={styles.image} source={require('../assets/dp1.jpg')} />
             <View style={styles.mainContainer}>
                 {props.data.subjects.map((subject, i) => (
                     <Badge key={i} label={subject} style={styles.badge} />

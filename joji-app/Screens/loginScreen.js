@@ -1,17 +1,33 @@
 import { StatusBar } from 'expo-status-bar';
-import { Image, StyleSheet, View } from 'react-native';
+import { Text, Image, StyleSheet, View } from 'react-native';
 import { Button, TextInput } from '@react-native-material/core';
 import { useNavigation } from '@react-navigation/native';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 function LoginScreen () {
+  const {login} = useContext(AuthContext)
+  const [email, setEmail] = useState(null)
+  const [password, setPassword] = useState(null)
   const navigation = useNavigation();
+
+
     return (
         <View style={styles.container}>
             <Image style={styles.logo} source={require('../assets/joji-logo.png')} />
-            <TextInput label="Email" style={styles.textbox} />
-            <TextInput secureTextEntry={true} label="Password" style={styles.textbox} />
+            <TextInput 
+              label="Email" 
+              style={styles.textbox}
+              value={email}
+              onChangeText={(text) => {setEmail(text)}} />
+            <TextInput 
+              secureTextEntry={true} 
+              label="Password" 
+              style={styles.textbox}
+              value={password}
+              onChangeText={pw => {setPassword(pw)}} />
             <StatusBar style="auto" />
-            <Button title="Login" style={styles.loginButton} onPress={() => navigation.navigate('Main')}></Button>
+            <Button title="Login" style={styles.loginButton} onPress={() => {login(email, password)}}></Button>
         </View>
     )
 }

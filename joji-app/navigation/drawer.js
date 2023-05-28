@@ -9,7 +9,7 @@ const Drawer = createDrawerNavigator();
 function MainDrawer() {
     return (
         <Drawer.Navigator>
-            <Drawer.Screen name="Swipe" component={MainScreen} />
+            <Drawer.Screen name="For you" component={MainScreen} />
             <Drawer.Screen name="Matches" component={MatchScreen} />
             <Drawer.Screen name="Profile" component={ProfileScreen} />
             <Drawer.Screen name="Settings" component={SettingsScreen} />

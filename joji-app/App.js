@@ -5,12 +5,17 @@ import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from './Screens/loginScreen';
 import HomeStack from './navigation/stack';
 import MainScreen from './Screens/mainScreen';
+import MainDrawer from './navigation/drawer';
+import MatchScreen from './Screens/matchScreen';
+import SwipeableCard from './components/swipeableCard';
+import { AuthProvider } from './context/AuthContext';
+import AppNav from './navigation/appNav';
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <HomeStack />
-    </NavigationContainer>
+    <AuthProvider>
+      <AppNav />
+    </AuthProvider>
   );
 }
 

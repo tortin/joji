@@ -1,18 +1,41 @@
 import { Image, StyleSheet, Text, View} from 'react-native';
 import SwipeableCard from '../components/swipeableCard';
 import DUMMY_DATA from './dummyData';
+import { useState, useEffect } from 'react';
 
 
 function MainScreen () {
-    return (
-        <View style={styles.container}>
-            <SwipeableCard style={styles.card} card={DUMMY_DATA[0]} />
-            <View style={styles.options}>
-              <Image style={styles.image} source={require('../assets/tick.png')} />
-              <Image style={styles.image} source={require('../assets/cross.png')} />
-            </View>
+    
+    const [data, setData] = useState()
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+
+    const fetchData = async() => {
+      const response = await fetch('http://192.168.1.26:8000/api/')
+      const data = await response.json()
+      setData(data)
+    }
+
+
+    if (data === undefined){
+      return (
+        <View>
+          <Text>Loading...</Text>
         </View>
-    )
+      )
+    } 
+
+    return (
+      <View style={styles.container}>
+          <SwipeableCard style={styles.card} card={data[0]} />
+          <View style={styles.options}>
+            <Image style={styles.image} source={require('../assets/tick.png')} />
+            <Image style={styles.image} source={require('../assets/cross.png')} />
+          </View>
+      </View>
+  )
 }
 
 export default MainScreen;
