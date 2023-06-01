@@ -1,6 +1,6 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import MatchScreen from "../Screens/matchScreen";
-import MainScreen from "../Screens/mainScreen";
+import SwipeScreen from "../Screens/swipeScreen";
 import ProfileScreen from "../Screens/profileScreen";
 import SettingsScreen from "../Screens/settingsScreen";
 
@@ -9,7 +9,7 @@ const Drawer = createDrawerNavigator();
 function MainDrawer() {
     return (
         <Drawer.Navigator>
-            <Drawer.Screen name="For you" component={MainScreen} />
+            <Drawer.Screen name="For you" component={SwipeScreen} />
             <Drawer.Screen name="Matches" component={MatchScreen} />
             <Drawer.Screen name="Profile" component={ProfileScreen} />
             <Drawer.Screen name="Settings" component={SettingsScreen} />

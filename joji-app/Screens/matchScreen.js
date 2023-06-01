@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, View, Text } from 'react-native';
 import MatchCard from '../components/matchCard';
 import DUMMY_DATA from './dummyData';
 import { useState, useEffect } from 'react'
+import { BASE_URL } from '../config';
 
 function MatchScreen() {
 
@@ -11,7 +12,7 @@ function MatchScreen() {
     }, [])
 
     const fetchData = async() => {
-      const response = await fetch('http://192.168.1.26:8000/api/')
+      const response = await fetch(`${BASE_URL}/api/`)
       const data = await response.json()
       setData(data)
     }

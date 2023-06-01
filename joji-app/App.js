@@ -4,7 +4,6 @@ import {Button, TextInput} from '@react-native-material/core';
 import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from './Screens/loginScreen';
 import HomeStack from './navigation/stack';
-import MainScreen from './Screens/mainScreen';
 import MainDrawer from './navigation/drawer';
 import MatchScreen from './Screens/matchScreen';
 import SwipeableCard from './components/swipeableCard';

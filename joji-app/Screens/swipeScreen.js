@@ -2,9 +2,10 @@ import { Image, StyleSheet, Text, View} from 'react-native';
 import SwipeableCard from '../components/swipeableCard';
 import DUMMY_DATA from './dummyData';
 import { useState, useEffect } from 'react';
+import { BASE_URL } from '../config';
 
 
-function MainScreen () {
+function SwipeScreen () {
     
     const [data, setData] = useState()
 
@@ -13,7 +14,7 @@ function MainScreen () {
     }, [])
 
     const fetchData = async() => {
-      const response = await fetch('http://192.168.1.26:8000/api/')
+      const response = await fetch(`${BASE_URL}/api/`)
       const data = await response.json()
       setData(data)
     }
@@ -38,7 +39,7 @@ function MainScreen () {
   )
 }
 
-export default MainScreen;
+export default SwipeScreen;
 
 const styles = StyleSheet.create({
     container: {

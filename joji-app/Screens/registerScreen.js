@@ -1,16 +1,25 @@
-import { StatusBar } from 'expo-status-bar';
-import { Text, Image, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { Button, TextInput } from '@react-native-material/core';
-import { useNavigation } from '@react-navigation/native';
 import { useContext, useState } from 'react';
-import { AuthContext } from '../context/AuthContext';
+import { BASE_URL } from '../config';
+import axios from 'axios';
 
-function LoginScreen () {
-  const {login} = useContext(AuthContext)
+function RegisterScreen () {
   const [email, setEmail] = useState(null)
   const [password, setPassword] = useState(null)
-  const navigation = useNavigation();
+  const [username, setUsername] = useState(null)
 
+  const handleSubmit = (email, password, username) => {
+    axios.post(`${BASE_URL}/api/user/register/`, {
+      "email": email,
+      "user_name": username,
+      "password": password,
+    })
+    .then((response) => {
+      console.log(response)
+      console.log(response.data)
+    })
+  }
 
     return (
         <View style={styles.container}>
@@ -21,13 +30,20 @@ function LoginScreen () {
               value={email}
               onChangeText={(text) => {setEmail(text)}} />
             <TextInput 
-              secureTextEntry={true} 
+              label="Username" 
+              style={styles.textbox}
+              value={username}
+              onChangeText={(text) => {setUsername(text)}} />
+            <TextInput 
+              secureTextEntry={true}
               label="Password" 
               style={styles.textbox}
               value={password}
               onChangeText={text => {setPassword(text)}} />
-            <StatusBar style="auto" />
-            <Button title="Login" style={styles.loginButton} onPress={() => {login(email, password)}}></Button>
+            <Button 
+              title="Register" 
+              style={styles.registerButton}
+              onPress={() => handleSubmit(email, password, username)}></Button>
         </View>
     )
 }
@@ -44,8 +60,9 @@ const styles = StyleSheet.create({
       width:'80%',
       marginVertical: 8,
     },
-    loginButton: {
-      width: '20%',
+    registerButton: {
+      marginTop: 8,
+      width: "40%"
     },
     logo: {
       width: 180,
@@ -54,4 +71,4 @@ const styles = StyleSheet.create({
     },
   });
   
-  export default LoginScreen
+export default RegisterScreen
