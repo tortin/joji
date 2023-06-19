@@ -3,11 +3,14 @@ import { Button, TextInput } from '@react-native-material/core';
 import { useContext, useState } from 'react';
 import { BASE_URL } from '../config';
 import axios from 'axios';
+import SnackbarComponent from 'react-native-snackbar-component';
 
 function RegisterScreen () {
   const [email, setEmail] = useState(null)
   const [password, setPassword] = useState(null)
   const [username, setUsername] = useState(null)
+  const [sbVisible, setSbVisible] = useState(false)
+  const [sbMessage, setSbMessage] = useState("")
 
   const handleSubmit = (email, password, username) => {
     axios.post(`${BASE_URL}/api/user/register/`, {
@@ -18,6 +21,14 @@ function RegisterScreen () {
     .then((response) => {
       console.log(response)
       console.log(response.data)
+      if (response.status === 201) {
+        setSbMessage("User successfully created!")
+        setSbVisible(true)
+      }
+    })
+    .catch(e => {
+      setSbMessage("Registration Failed! Enter valid details")
+      setSbVisible(true)
     })
   }
 
@@ -44,6 +55,12 @@ function RegisterScreen () {
               title="Register" 
               style={styles.registerButton}
               onPress={() => handleSubmit(email, password, username)}></Button>
+            <SnackbarComponent 
+              visible={sbVisible} 
+              textMessage={sbMessage} 
+              actionHandler={()=>{setSbVisible(false)}} 
+              actionText="Dismiss" 
+              autoHidingTime={3000}/>
         </View>
     )
 }

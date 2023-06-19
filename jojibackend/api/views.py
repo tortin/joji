@@ -11,3 +11,7 @@ class ProfileList(generics.ListCreateAPIView):
 class ProfileDetail(generics.RetrieveDestroyAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+
+class ProfileUpdate(generics.RetrieveUpdateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer

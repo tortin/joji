@@ -1,24 +1,60 @@
 import { Image, StyleSheet, Text, View} from 'react-native';
 import SwipeableCard from '../components/swipeableCard';
-import DUMMY_DATA from './dummyData';
 import { useState, useEffect } from 'react';
 import { BASE_URL } from '../config';
+import axios from 'axios';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import jwt_decode from 'jwt-decode';
+import { useIsFocused } from '@react-navigation/native';
 
 
 function SwipeScreen () {
     
-    const [data, setData] = useState()
+  const isFocused = useIsFocused()
+  const {token} = useContext(AuthContext);
+  const id = jwt_decode(token).user_id
+  const [data, setData] = useState()
+  const [type, setType] = useState()
 
-    useEffect(() => {
-        fetchData()
-    }, [])
 
-    const fetchData = async() => {
-      const response = await fetch(`${BASE_URL}/api/`)
-      const data = await response.json()
-      setData(data)
+  //Fetch data on page render, refresh everytime matches is updated
+  useEffect(() => {
+      if(isFocused) {
+          fetchData()
+      }
+  }, [isFocused])
+
+  const fetchData = () => {
+    console.log(id)
+    axios.get(`${BASE_URL}/api/`)
+      .then(response => {
+          temp = response.data
+          tempType = undefined
+          temp.forEach((item) => {
+              if (item.id === id) {
+                tempType = item.type
+                setType(item.type)
+              }
+          })
+          if (tempType !== undefined)
+          {setData(temp.filter(item => {
+              return item.type !== tempType
+          }))}
+          console.log(data)
+      })
+      .catch(err => {
+          console.log(err)
+      })
+  }
+
+    if (type === undefined) {
+      return (
+        <View>
+          <Text>Please create a profile!</Text>
+        </View>
+      )
     }
-
 
     if (data === undefined){
       return (
@@ -26,7 +62,14 @@ function SwipeScreen () {
           <Text>Loading...</Text>
         </View>
       )
-    } 
+    }
+    if (data === []) {
+      return (
+        <View>
+          <Text>No matches yet!</Text>
+        </View>
+      )
+    }
 
     return (
       <View style={styles.container}>

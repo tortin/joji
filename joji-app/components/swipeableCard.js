@@ -1,6 +1,6 @@
 import { Badge } from '@react-native-material/core';
 import React from 'react';
-import { Image, View, StyleSheet, Dimensions, ImageBackground, Pressable } from 'react-native';
+import { Image, View, StyleSheet, Dimensions } from 'react-native';
 import { Text } from '@react-native-material/core'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -11,7 +11,7 @@ const SwipeableCard = ({card}) => {
     return (
         <View style={styles.card}>
             <Image
-                source={require('../assets/dp1.jpg')}
+                source={{uri: `${card.image}`}}
                 style={styles.image} />
             <View>
                 <View style={styles.nameContainer}>

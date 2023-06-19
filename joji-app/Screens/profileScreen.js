@@ -1,15 +1,19 @@
-import { Image, StyleSheet, ScrollView, View, Text } from 'react-native';
-import { Stack,Button, TextInput} from '@react-native-material/core';
-import { useNavigation } from '@react-navigation/native';
+import { Modal, Image, StyleSheet, ScrollView, View, Text, KeyboardAvoidingView } from 'react-native';
+import { Button, TextInput} from '@react-native-material/core';
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
-import { Divider } from "@react-native-material/core";
-import { ListItem } from "@react-native-material/core";
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { MultipleSelectList, SelectList } from 'react-native-dropdown-select-list';
 import { BASE_URL } from '../config';
 import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
+import jwt_decode from 'jwt-decode';
+import * as ImagePicker from 'expo-image-picker';
+import SnackbarComponent from 'react-native-snackbar-component';
 
 function ProfileScreen() {
+
+    const {token} = useContext(AuthContext);
+    const id = jwt_decode(token).user_id
 
     const [name, setName] = useState("")
     const [age, setAge] = useState(null)
@@ -20,6 +24,10 @@ function ProfileScreen() {
     const [subjects, setSubjects] = useState("")
     const [exp, setExp] = useState("")
     const [type, setType] = useState(null)
+    const [remarks, setRemarks] = useState("")
+    const [image, setImage] = useState(null)
+    const [sbVisible, setSbVisible] = useState(false)
+    const [sbMessage, setSbMessage] = useState("")
 
     const genderList = [
         {'key': 1, 'value': "M"},
@@ -55,81 +63,111 @@ function ProfileScreen() {
         {"key": 2, 'value': "student"}
     ]
 
-    const handleSubmit = (name, age, gender, locations, floorPrice, ceilPrice, subjects, exp, type) => {
-        console.log(name)
+    const handleSubmit = (name, age, gender, locations, floorPrice, ceilPrice, subjects, exp, type, remarks, image) => {
+        const config = { headers: { 'Content-Type': 'multipart/form-data'}}
         subjects = subjects.split(', ')
         subjects.map(ele => ele.trim())
-        data = {
-            "age": parseInt(age),
-            "name": name,
-            "gender": gender,
-            "price": `$${floorPrice} - $${ceilPrice}`,
-            "experience": `${exp} years`,
-            "locations": locations,
-            "subjects" : subjects,
-            "type:": type
-          }
-        console.log(data)
-        axios.post(`${BASE_URL}/api/`, {
-            "age": parseInt(age),
-            "name": name,
-            "gender": gender,
-            "price": `$${floorPrice} - $${ceilPrice}`,
-            "experience": `${exp} years`,
-            "locations": locations,
-            "subjects" : subjects,
-            "type:": type
-          })
+        // Formatted object to pass using FormData
+        let formData = new FormData();
+        formData.append("id", id)
+        formData.append('age', parseInt(age));
+        formData.append('name', name);
+        formData.append('gender', gender);
+        formData.append('price', `$${floorPrice} - $${ceilPrice}`);
+        formData.append('experience', `${exp} years`);
+        locations.forEach((item) => formData.append("locations", item))
+        subjects.forEach((item) => formData.append("subjects", item))
+        formData.append('type', type)
+        formData.append('remarks', remarks)
+        formData.append('image', {
+            name: image.assets[0].fileName,
+            type: image.assets[0].type,
+            uri: image.assets[0].uri
+        });
+        //Attempt to update profile, if profile doesnt exist, create it
+        axios.put(`${BASE_URL}/api/update/${id}/`, formData, config)
           .then((response) => {
             console.log(response)
-            console.log(response.data)
+            if (response.status === 200) {
+                setSbMessage("Update Profile Successful!")
+                setSbVisible(true)
+            }
+          })
+          .catch(e => {
+            axios.post(`${BASE_URL}/api/`, formData, config)
+            .then(response => {
+                if (response.status === 201) {
+                    setSbMessage("Create Profile Successful!")
+                    setSbVisible(true)
+                }
+            })
+            .catch(e => {
+                setSbMessage("Create/Update Profile Failed! Check all fields again")
+                setSbVisible(true)
+            })
           })
     }
+
+    const openGallery = async () => {
+        selectedPic = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            aspect: [1,1],
+            quality: 1,
+        });
+        setImage(selectedPic)
+        console.log(selectedPic.uri)
+      }
 
     return (
         <View style={{backgroundColor:"#ffcccc"}}>
         <ScrollView 
             contentContainerstyle = {styles.contentContainer}
             scrollIndicatorInsets={{ right: 1 }}>
-            <View style={{backgroundColor:'#ffffff'}}>
-                <Image style={styles.logo} source={require('../assets/boy.jpg')} />
+            <View style={styles.imageBox}>           
+                { image !== null ? 
+                <Image source={{ uri: image.assets[0].uri }} style={styles.image}/> : 
+                <Image source={require('../assets/placeholder-avatar.png')} style={styles.image} />}
             </View>
+            <Button 
+                title="UPLOAD IMAGE" 
+                onPress={() => {openGallery()}}
+                trailing={props => <Icon name="upload" {...props}/>}
+                style={styles.button} />
             <View style = {styles.new}>
-                <Text>Gender</Text>
+                <Text style={styles.text}>Gender</Text>
                 <SelectList 
                     setSelected = {(val) => {setGender(val)}}
                     data = {genderList}
                     label = "Genders"
-                    save = "value" 
-                    style = {styles.subbox} />    
-                <Text>Locations</Text>
+                    save = "value" />    
+                <Text style={styles.text}>Years of Experience</Text>
+                <SelectList 
+                    setSelected = {(val) => {setExp(val)}}
+                    data = {expList}
+                    label = "Years of Experience"
+                    save = "value" />    
+                <Text style={styles.text}>Locations</Text>
                 <MultipleSelectList 
                     data = {locationList}
                     setSelected={(locs) => {setLocations(locs)}}
                     save = "value"
                     label = "Locations" />
-                <Text>Years of Experience</Text>
-                <SelectList 
-                    setSelected = {(val) => {setExp(val)}}
-                    data = {expList}
-                    label = "Years of Experience"
-                    save = "value" 
-                    style = {styles.subbox} />    
-                <Text>FULL NAME</Text>
+                <Text style={styles.text}>Full Name</Text>
                 <TextInput 
                     label = "NAME" 
                     style = {styles.subbox}
                     onChangeText = {(text) => {setName(text)}}
                     value = {name} />
-                <Text>Age</Text>
+                <Text style={styles.text}>Age</Text>
                 <TextInput
                     value = {age}
                     label = "AGE" 
                     style = {styles.subbox}
                     onChangeText = {(text) => {{setAge(text)}}} />
-                <Text>Expected Price</Text>
+                <Text style={styles.text}>Expected Price</Text>
                 <View style = {styles.priceContainer}>
                     <TextInput 
+                        label="MIN"
                         style={styles.priceInput} 
                         onChangeText = {(text) => {setFloorPrice(text)}}
                         value = {floorPrice} />
@@ -137,34 +175,45 @@ function ProfileScreen() {
                          textAlignVertical = "center"
                          style = {styles.priceDash}>-</Text>
                     <TextInput 
+                        label="MAX"
                         style={styles.priceInput}
                         onChangeText = {(text) => {setCeilPrice(text)}}
                         value = {ceilPrice} />
                 </View>
-                <Text>Subjects (separated by commas)</Text>
-                <TextInput 
+                <Text style={styles.text}>Subjects (separated by commas)</Text>
+                <TextInput
+                    editable
                     label = "SUBJECTS" 
                     style = {styles.subbox} 
                     onChangeText = {(text) => {setSubjects(text)}}
                     value = {subjects} />
+                <Text style={styles.text}>Additional Remarks (Qualifications, special requests etc.)</Text>
+                <TextInput
+                    editable
+                    multiline
+                    placeholder = "REMARKS" 
+                    style = {styles.bigbox}
+                    onChangeText = {(text) => {setRemarks(text)}}
+                    value = {remarks} />
             </View>
             <Text variant="button" style={styles.title}>I am a:</Text>
             <SelectList 
                     setSelected = {(val) => setType(val)}
                     data = {typeList}
                     label = "I AM A"
-                    save = "value" 
-                    style = {styles.subbox} />    
-            <Divider style={{ marginTop: 60 }} />
-            <ListItem title = "RESUME (TUTORS)" style = {styles.resume} />
-            <TextInput label = "Years of Experience" style = {styles.box} />
-            <TextInput label = "Achievements" style = {styles.box} />
-            <Button variant = "text" title = "Attach File" style = {styles.file} />
+                    save = "value" />    
             <Button 
                 title="Send" 
-                trailing={props => <Icon name="send" {...props} style = {styles.send}/>}
-                onPress={() => {handleSubmit(name, age, gender, locations, floorPrice, ceilPrice, subjects, exp, type)}} />
+                trailing={props => <Icon name="send" {...props}/>}
+                onPress={() => {handleSubmit(name, age, gender, locations, floorPrice, ceilPrice, subjects, exp, type, remarks, image)}}
+                style={styles.button} />
         </ScrollView>
+        <SnackbarComponent 
+            visible={sbVisible} 
+            textMessage={sbMessage} 
+            actionHandler={()=>{setSbVisible(false)}} 
+            actionText="Dismiss" 
+            autoHidingTime={3000}/>
         </View>
     )
 }
@@ -189,13 +238,16 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     subbox: {
-      width: 300,
+      width: "75%",
       height: 60,
-      marginBottom:2,
-      marginTop:10,
     },
+    bigbox: {
+        width: 300,
+        height: 240,
+        marginBottom:2,
+        marginTop:10,
+      },
     title : {
-        marginBottom: 0,
         marginTop : 30,
         fontSize: 25,
         alignSelf:'center',
@@ -208,8 +260,29 @@ const styles = StyleSheet.create({
         flex: 5,
     },
     priceDash: {
-        flex: 1
+        flex: 1,
+        alignSelf:'center',
+    },
+    imageBox: {
+        marginTop: 20,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    image: {
+        height: 200,
+        width: 200,
+        borderRadius: 15,
+        resizeMode: 'cover',
+    },
+    button: {
+        marginVertical: 15,
+        width: "40%",
+        alignSelf: 'center'
+    },
+    text: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        marginVertical: 6,
     }
-
   });
 export default ProfileScreen;

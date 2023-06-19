@@ -23,8 +23,6 @@ export const AuthProvider = ({children}) => {
             let tokens = response.data
             console.log(tokens)
             setToken(tokens.access)
-            console.log(token)
-
             AsyncStorage.setItem('token', tokens.access)
 
         })
@@ -49,7 +47,7 @@ export const AuthProvider = ({children}) => {
             setToken(token)
             setIsLoading(false)
         } catch(e) {
-            console.log(`Loginerror: ${e}`)
+            console.log(`Login error: ${e}`)
         }
     }
 
