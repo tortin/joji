@@ -1,16 +1,22 @@
 import { Image, StyleSheet, Text, View} from 'react-native';
 import SwipeableCard from '../components/swipeableCard';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BASE_URL } from '../config';
 import axios from 'axios';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import jwt_decode from 'jwt-decode';
 import { useIsFocused } from '@react-navigation/native';
-
+import Swiper from 'react-native-deck-swiper'
+import { IconButton } from '@react-native-material/core';
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 function SwipeScreen () {
     
+  const useSwiper = useRef(null).current
+  const handleOnSwipedLeft = () => useSwiper.swipeLeft()
+  const handleOnSwipedTop = () => useSwiper.swipeTop()
+  const handleOnSwipedRight = () => useSwiper.swipeRight()
   const isFocused = useIsFocused()
   const {token} = useContext(AuthContext);
   const id = jwt_decode(token).user_id
@@ -70,14 +76,42 @@ function SwipeScreen () {
         </View>
       )
     }
-
+    <SwipeableCard style={styles.card} card={data[0]} />
     return (
       <View style={styles.container}>
-          <SwipeableCard style={styles.card} card={data[0]} />
-          <View style={styles.options}>
-            <Image style={styles.image} source={require('../assets/tick.png')} />
-            <Image style={styles.image} source={require('../assets/cross.png')} />
-          </View>
+        <View style={styles.swiper}>
+          <Swiper
+            ref={useSwiper}
+            animateCardOpacity
+            cards={data}
+            renderCard={card => <SwipeableCard style={styles.card} card={card} />} 
+            showSecondCard
+            stackSize={2}
+            backgroundColor='#F5F5F4'/>
+        </View>
+        <View style={styles.icons}>
+        <IconButton
+          icon={props => <Icon name="close" {...props} />}
+          onPress={handleOnSwipedLeft}
+          color="white"
+          backgroundColor="#E5566D"
+          style={styles.button}
+        />
+        <IconButton
+          icon={props => <Icon name="information-outline" {...props} />}
+          onPress={handleOnSwipedRight}
+          color="white"
+          backgroundColor="#FFDF00"
+          style={styles.button}
+        />
+        <IconButton
+          icon={props => <Icon name="heart" {...props} />}
+          onPress={handleOnSwipedRight}
+          color="white"
+          backgroundColor="#4CCC93"
+          style={styles.button}
+        />
+      </View>
       </View>
   )
 }
@@ -89,7 +123,6 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       backgroundColor: "#F5F5F4",
-      alignItems: 'center'
     },
     card: {
       alignSelf: 'center',
@@ -103,6 +136,15 @@ const styles = StyleSheet.create({
     image: {
       height: 75,
       width: 75,
-    }
+    },
+    swiper: {
+      flex: 4
+    },
+    icons: {
+      flex: 1,
+      alignItems: 'center',
+      flexDirection: 'row',
+      justifyContent: 'space-around'
+    },
   });
   
