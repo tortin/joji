@@ -189,19 +189,22 @@ function ProfileScreen() {
                     value = {subjects} />
                 <Text style={styles.text}>Additional Remarks (Qualifications, special requests etc.)</Text>
                 <TextInput
+                    numberOfLines={10}
                     editable
                     multiline
-                    placeholder = "REMARKS" 
-                    style = {styles.bigbox}
+                    label = "REMARKS" 
                     onChangeText = {(text) => {setRemarks(text)}}
-                    value = {remarks} />
-            </View>
-            <Text variant="button" style={styles.title}>I am a:</Text>
-            <SelectList 
+                    value = {remarks}
+                    style={{width:"75%"}} />
+                <Text variant="button" style={styles.title}>Student/Tutor?</Text>
+                <SelectList 
                     setSelected = {(val) => setType(val)}
                     data = {typeList}
                     label = "I AM A"
-                    save = "value" />    
+                    save = "value"
+ />    
+            </View>
+
             <Button 
                 title="Send" 
                 trailing={props => <Icon name="send" {...props}/>}
@@ -241,15 +244,10 @@ const styles = StyleSheet.create({
       width: "75%",
       height: 60,
     },
-    bigbox: {
-        width: 300,
-        height: 240,
-        marginBottom:2,
-        marginTop:10,
-      },
     title : {
-        marginTop : 30,
-        fontSize: 25,
+        fontSize: 16,
+        marginBottom: 8,
+        fontWeight: "bold",
         alignSelf:'center',
     },
     priceContainer: {

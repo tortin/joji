@@ -43,7 +43,7 @@ function MatchScreen() {
         })
     }
 
-    if (matches === []) {
+    if (matches.length === 0) {
         return (
             <View>
                 <Text>No matches currently!</Text>
@@ -78,6 +78,5 @@ export default MatchScreen;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: "#F5F5F4",
     }
 })

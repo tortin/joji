@@ -15,16 +15,68 @@ function SwipeScreen () {
     
   const useSwiper = useRef(null).current
   const handleOnSwipedLeft = () => useSwiper.swipeLeft()
-  const handleOnSwipedTop = () => useSwiper.swipeTop()
   const handleOnSwipedRight = () => useSwiper.swipeRight()
+  const handleTap = () => useSwiper.onTapCard()
   const isFocused = useIsFocused()
   const {token} = useContext(AuthContext);
   const id = jwt_decode(token).user_id
   const [data, setData] = useState()
   const [type, setType] = useState()
+  const [selfData, setSelfData] = useState()
+
+  // Dislike handler
+  const handleLeftSwipe = (index) => {
+    matchData = data[index]
+    matchId = matchData.id
+    if (!selfData.rejects.includes(matchId)) {
+        selfData.rejects.push(matchId)
+    }
+    axios.patch(`${BASE_URL}/api/update/${id}/`, {
+      "rejects": selfData.rejects
+    })
+    .catch(e => {
+      console.log(e)
+    })
+  }
+
+  // Like handler
+  const handleRightSwipe = (index) => {
+    matchData = data[index]
+    matchId = matchData.id
+    if (matchData.likes.includes(id)) {
+      idx = matchData.likes.indexOf(id)
+      matchData.likes.splice(idx, 1)
+      matchData.matches.push(id)
+      selfData.matches.push(matchId)
+      console.log(selfData.matches)
+      axios.patch(`${BASE_URL}/api/update/${id}/`, {
+        "matches": selfData.matches
+      })
+      .catch(e => {
+        console.log(e)
+      })
+      axios.patch(`${BASE_URL}/api/update/${matchId}/`, {
+        "matches": matchData.matches,
+        "likes": matchData.likes
+      })
+      .catch(e => {
+        console.log(e)
+      })
+    }
+    else {
+      selfData.likes.push(matchId)
+      console.log(selfData.likes)
+      axios.patch(`${BASE_URL}/api/update/${id}/`, {
+        "likes": selfData.likes
+      })
+      .catch(e => {
+        console.log(e)
+      })
+    }
+  }
 
 
-  //Fetch data on page render, refresh everytime matches is updated
+  //Fetch data on page render, refresh everytime screen is focused
   useEffect(() => {
       if(isFocused) {
           fetchData()
@@ -32,22 +84,25 @@ function SwipeScreen () {
   }, [isFocused])
 
   const fetchData = () => {
-    console.log(id)
     axios.get(`${BASE_URL}/api/`)
       .then(response => {
           temp = response.data
-          tempType = undefined
+          tempSelfData = temp.filter(item => {
+            return item.id === id
+          })[0]
+          setSelfData(tempSelfData)
           temp.forEach((item) => {
-              if (item.id === id) {
-                tempType = item.type
-                setType(item.type)
-              }
-          })
-          if (tempType !== undefined)
-          {setData(temp.filter(item => {
-              return item.type !== tempType
-          }))}
-          console.log(data)
+          if (item.id === id) {
+            tempType = item.type
+            setType(item.type)
+          }
+      })
+          if (tempType !== undefined){
+          temp = temp.filter(item => {
+              return (item.type !== tempType) && (!tempSelfData.rejects.includes(item.id)) && (!tempSelfData.likes.includes(item.id)) && (!tempSelfData.matches.includes(item.id))
+          })}
+          console.log(temp)
+          setData(temp)
       })
       .catch(err => {
           console.log(err)
@@ -61,32 +116,34 @@ function SwipeScreen () {
         </View>
       )
     }
-
-    if (data === undefined){
+    else if (data === undefined){
       return (
         <View>
           <Text>Loading...</Text>
         </View>
       )
     }
-    if (data === []) {
+    else if (data.length === 0) {
       return (
         <View>
-          <Text>No matches yet!</Text>
+          <Text>That&#39;s all for now!</Text>
         </View>
       )
     }
-    <SwipeableCard style={styles.card} card={data[0]} />
+    else {
     return (
       <View style={styles.container}>
         <View style={styles.swiper}>
           <Swiper
             ref={useSwiper}
+            verticalSwipe={false}
             animateCardOpacity
             cards={data}
-            renderCard={card => <SwipeableCard style={styles.card} card={card} />} 
+            renderCard={card => (<SwipeableCard style={styles.card} card={card} id={card.id} />)} 
             showSecondCard
             stackSize={2}
+            onSwipedLeft={(index) => {handleLeftSwipe(index)}}
+            onSwipedRight={(index) => {handleRightSwipe(index)}}
             backgroundColor='#F5F5F4'/>
         </View>
         <View style={styles.icons}>
@@ -99,9 +156,8 @@ function SwipeScreen () {
         />
         <IconButton
           icon={props => <Icon name="information-outline" {...props} />}
-          onPress={handleOnSwipedRight}
           color="white"
-          backgroundColor="#FFDF00"
+          backgroundColor="blue"
           style={styles.button}
         />
         <IconButton
@@ -113,7 +169,7 @@ function SwipeScreen () {
         />
       </View>
       </View>
-  )
+  )}
 }
 
 export default SwipeScreen;

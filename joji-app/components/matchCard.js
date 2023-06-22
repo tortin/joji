@@ -2,6 +2,8 @@ import { Badge } from '@react-native-material/core';
 import { StyleSheet, View, Dimensions, Image, Pressable } from 'react-native';
 import axios from 'axios';
 import { BASE_URL } from '../config';
+import { IconButton } from '@react-native-material/core';
+import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -49,26 +51,34 @@ function MatchCard(props) {
         <View style={styles.container}>
             <Image style={styles.image} source={{uri: `${props.data.image}`}} />
             <View style={styles.mainContainer}>
-                {props.data.subjects.map((subject, i) => (
+                {props.data.subjects.slice(0, 2).map((subject, i) => (
                     <Badge key={i} label={subject} style={styles.badge} />
                 ))}
                 <Badge label={props.data.price} style={styles.badge} />
-                {props.data.locations.map((location, i) => (
+                {props.data.locations.slice(0, 2).map((location, i) => (
                     <Badge key={i} label={location} style={styles.badge} />
                 ))}
             </View>
-            <View style={styles.optionsContainer}>
-                <Pressable style={styles.option}>
-                    <Image source={require('../assets/details.png')} style={styles.optionImage} />
-                </Pressable>
-                <Pressable style={styles.option}>
-                    <Image source={require('../assets/chat.png')} style={styles.optionImage} />
-                </Pressable>
-                <Pressable 
-                    style={styles.option}
-                    onPress={() => {handleUnmatch(props.data, props.id, props.matchId, props.selfData, props.stateChanger)}}>
-                    <Image source={require('../assets/cross.png')} style={styles.optionImage} />
-                </Pressable>
+            <View style={styles.optionsContainer}>           
+                <IconButton
+                icon={props => <Icon name="information-outline" {...props} />}
+                color="white"
+                backgroundColor="blue"
+                style={styles.optionImage}
+                />         
+                <IconButton
+                icon={props => <Icon name="chat" {...props} />}
+                color="white"
+                backgroundColor="green"
+                style={styles.optionImage}
+                />         
+                <IconButton
+                icon={props => <Icon name="close" {...props} />}
+                onPress={() => {handleUnmatch(props.data, props.id, props.matchId, props.selfData, props.stateChanger)}}
+                color="white"
+                backgroundColor="#E5566D"
+                style={styles.optionImage}
+                />
             </View>
         </View>
     )
@@ -105,20 +115,16 @@ function MatchCard(props) {
     badge: {
         backgroundColor:"#cbefdc",
         marginTop: 1,
-        width: '90%',
+        width: '95%',
         alignSelf: 'center'
     },
     optionsContainer: {
         flex: (1 - SCREEN_HEIGHT * 0.14 / SCREEN_WIDTH) * 0.15,
-    },
-    option: {
-        flex: 1,
-        justifyContent: 'center',
-        borderWidth: 1,
+        justifyContent: 'space-around'
     },
     optionImage: {
-        width: 25,
-        height: 25,
+        width: 32,
+        height: 32,
         alignSelf: 'center'
     }
 })
