@@ -8,16 +8,19 @@ import { AuthContext } from '../context/AuthContext';
 import jwt_decode from 'jwt-decode';
 import { useIsFocused } from '@react-navigation/native';
 import Swiper from 'react-native-deck-swiper'
-import { IconButton } from '@react-native-material/core';
+import { IconButton, DialogHeader, DialogActions,DialogContent, Button } from '@react-native-material/core';
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import PopUp from '../components/popup';
+import Dialog from '@react-native-material/core';
 
 function SwipeScreen () {
-    
+
+  const [visible, setVisible] = useState(false)
+  const isFocused = useIsFocused()
   const useSwiper = useRef(null).current
   const handleOnSwipedLeft = () => useSwiper.swipeLeft()
   const handleOnSwipedRight = () => useSwiper.swipeRight()
   const handleTap = () => useSwiper.onTapCard()
-  const isFocused = useIsFocused()
   const {token} = useContext(AuthContext);
   const id = jwt_decode(token).user_id
   const [data, setData] = useState()
@@ -73,6 +76,11 @@ function SwipeScreen () {
         console.log(e)
       })
     }
+  }
+
+  const showDetails = () => {
+    setVisible(true)
+    console.log(visible)
   }
 
 
@@ -149,7 +157,7 @@ function SwipeScreen () {
         <View style={styles.icons}>
         <IconButton
           icon={props => <Icon name="close" {...props} />}
-          onPress={handleOnSwipedLeft}
+          onPress={showDetails}
           color="white"
           backgroundColor="#E5566D"
           style={styles.button}
@@ -157,6 +165,7 @@ function SwipeScreen () {
         <IconButton
           icon={props => <Icon name="information-outline" {...props} />}
           color="white"
+          onPress={showDetails}
           backgroundColor="blue"
           style={styles.button}
         />
@@ -168,6 +177,7 @@ function SwipeScreen () {
           style={styles.button}
         />
       </View>
+      <PopUp visible={visible} dismiss={setVisible}/>
       </View>
   )}
 }

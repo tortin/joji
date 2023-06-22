@@ -6,7 +6,7 @@ import { Text } from '@react-native-material/core'
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-const SwipeableCard = ({card,}) => {
+const SwipeableCard = ({card}) => {
 
     return (
         <View style={styles.card}>
@@ -31,7 +31,6 @@ const SwipeableCard = ({card,}) => {
                 </View>
                 <Text style={styles.subheader}>Price</Text>
                 <Text style={styles.price}>{card.price}</Text>
-                <Text>{id}</Text>
             </View>
         </View>
     )

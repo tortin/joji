@@ -65,6 +65,7 @@ function MatchCard(props) {
                 color="white"
                 backgroundColor="blue"
                 style={styles.optionImage}
+                onPress={() => {props.show(true)}}
                 />         
                 <IconButton
                 icon={props => <Icon name="chat" {...props} />}
