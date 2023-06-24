@@ -8,19 +8,18 @@ import { AuthContext } from '../context/AuthContext';
 import jwt_decode from 'jwt-decode';
 import { useIsFocused } from '@react-navigation/native';
 import Swiper from 'react-native-deck-swiper'
-import { IconButton, DialogHeader, DialogActions,DialogContent, Button } from '@react-native-material/core';
+import { IconButton } from '@react-native-material/core';
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import PopUp from '../components/popup';
-import Dialog from '@react-native-material/core';
+import socket from "../utils/socket";
 
 function SwipeScreen () {
 
   const [visible, setVisible] = useState(false)
   const isFocused = useIsFocused()
-  const useSwiper = useRef(null).current
-  const handleOnSwipedLeft = () => useSwiper.swipeLeft()
-  const handleOnSwipedRight = () => useSwiper.swipeRight()
-  const handleTap = () => useSwiper.onTapCard()
+  const useSwiper = useRef(null)
+  const handleOnSwipedLeft = () => useSwiper.current.swipeLeft()
+  const handleOnSwipedRight = () => useSwiper.current.swipeRight()
   const {token} = useContext(AuthContext);
   const id = jwt_decode(token).user_id
   const [data, setData] = useState()
@@ -52,6 +51,7 @@ function SwipeScreen () {
       matchData.matches.push(id)
       selfData.matches.push(matchId)
       console.log(selfData.matches)
+      socket.emit("createRoom", selfData.name + " and " + matchData.name +"'s Chat", [id, matchId])
       axios.patch(`${BASE_URL}/api/update/${id}/`, {
         "matches": selfData.matches
       })
@@ -152,12 +152,13 @@ function SwipeScreen () {
             stackSize={2}
             onSwipedLeft={(index) => {handleLeftSwipe(index)}}
             onSwipedRight={(index) => {handleRightSwipe(index)}}
+            onTapCard={showDetails}
             backgroundColor='#F5F5F4'/>
         </View>
         <View style={styles.icons}>
         <IconButton
           icon={props => <Icon name="close" {...props} />}
-          onPress={showDetails}
+          onPress={handleOnSwipedLeft}
           color="white"
           backgroundColor="#E5566D"
           style={styles.button}

@@ -4,11 +4,14 @@ import axios from 'axios';
 import { BASE_URL } from '../config';
 import { IconButton } from '@react-native-material/core';
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
+import { useNavigation } from '@react-navigation/native';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 function MatchCard(props) {
+
+    const navigation = useNavigation();
 
     const handleUnmatch = (matchData, id, key, selfData, stateChanger) => {
         console.log(matchData)
@@ -47,6 +50,14 @@ function MatchCard(props) {
         })
     }
 
+    const handleNavigation = () => {
+        console.log(props.room.id)
+        navigation.navigate("Message", {
+            id: props.room.id,
+            name: props.room.name
+        })
+    }
+
     return (
         <View style={styles.container}>
             <Image style={styles.image} source={{uri: `${props.data.image}`}} />
@@ -72,6 +83,7 @@ function MatchCard(props) {
                 color="white"
                 backgroundColor="green"
                 style={styles.optionImage}
+                onPress={handleNavigation}
                 />         
                 <IconButton
                 icon={props => <Icon name="close" {...props} />}

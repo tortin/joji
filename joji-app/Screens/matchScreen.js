@@ -18,6 +18,7 @@ function MatchScreen() {
     const [data, setData] = useState()
     const [matches, setMatches] = useState([])
     const [selfData, setSelfData] = useState()
+    const [rooms, setRooms] = useState([])
 
     useEffect(() => {
         if(isFocused) {
@@ -25,10 +26,18 @@ function MatchScreen() {
         }
     }, [isFocused])
 
-    const showDetails = () => {
-        setVisible(true)
-        console.log(visible)
-      }    
+    useEffect(() => {
+        function fetchRooms() {
+            fetch("http://192.168.1.26:4000/api")
+                .then((res) => res.json())
+                .then((data) => {
+                    setRooms(data)
+                    console.log(data)
+                })
+                .catch((err) => console.error(err));
+        }
+        fetchRooms();
+    }, []);
 
     const fetchData = () => {
       axios.get(`${BASE_URL}/api/`)
@@ -42,7 +51,6 @@ function MatchScreen() {
             temp = temp.filter(item => {
                 return temp2.matches.includes(item.id)
             })
-            console.log(temp)
             setData(temp)
         })
         .catch(err => {
@@ -76,7 +84,10 @@ function MatchScreen() {
                     selfData={selfData} 
                     key={i}
                     stateChanger={fetchData}
-                    show={setVisible}/>
+                    show={setVisible}
+                    room={rooms.filter(room => {
+                        return room.users.includes(id) && room.users.includes(profile.id)
+                    })[0]}/>
             ))}
             <Text>{"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"}</Text>
             <PopUp style={styles.dialog} visible={visible} dismiss={setVisible}/>
