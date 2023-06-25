@@ -22,7 +22,7 @@ function MessageScreen ({route, navigation}) {
 		navigation.setOptions({ title: name });
 		socket.emit("findRoom", id);
 		socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
-	}, []);
+	}, [socket]);
 
 	useEffect(() => {
 		socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));

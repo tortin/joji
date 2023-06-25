@@ -25,11 +25,14 @@ function SwipeScreen () {
   const [data, setData] = useState()
   const [type, setType] = useState()
   const [selfData, setSelfData] = useState()
+  const [indx, setIndx] = useState(0)
 
   // Dislike handler
   const handleLeftSwipe = (index) => {
     matchData = data[index]
     matchId = matchData.id
+    setIndx(indx + 1)
+    console.log(indx)
     if (!selfData.rejects.includes(matchId)) {
         selfData.rejects.push(matchId)
     }
@@ -45,6 +48,8 @@ function SwipeScreen () {
   const handleRightSwipe = (index) => {
     matchData = data[index]
     matchId = matchData.id
+    setIndx(indx + 1)
+    console.log(indx)
     if (matchData.likes.includes(id)) {
       idx = matchData.likes.indexOf(id)
       matchData.likes.splice(idx, 1)
@@ -81,6 +86,7 @@ function SwipeScreen () {
   const showDetails = () => {
     setVisible(true)
     console.log(visible)
+    console.log(data[indx])
   }
 
 
@@ -147,7 +153,7 @@ function SwipeScreen () {
             verticalSwipe={false}
             animateCardOpacity
             cards={data}
-            renderCard={card => (<SwipeableCard style={styles.card} card={card} id={card.id} />)} 
+            renderCard={card => (<SwipeableCard style={styles.card} card={card}/>)} 
             showSecondCard
             stackSize={2}
             onSwipedLeft={(index) => {handleLeftSwipe(index)}}
@@ -178,7 +184,9 @@ function SwipeScreen () {
           style={styles.button}
         />
       </View>
-      <PopUp visible={visible} dismiss={setVisible}/>
+      {indx < data.length ? 
+      <PopUp visible={visible} dismiss={setVisible} data={data[indx]}/> : 
+      <></>}
       </View>
   )}
 }

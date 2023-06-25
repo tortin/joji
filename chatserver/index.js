@@ -5,7 +5,7 @@ const http = require("http").Server(app)
 const cors = require("cors")
 const socketIO = require('socket.io')(http, {
     cors: {
-        origin: "<http://192.168.1.26:3000>"
+        origin: "<http://172.20.10.2:3000>"
     }
 })
 const generateID = () => Math.random().toString(36).substring(2, 10)

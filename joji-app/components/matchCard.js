@@ -5,6 +5,8 @@ import { BASE_URL } from '../config';
 import { IconButton } from '@react-native-material/core';
 import Icon from "@expo/vector-icons/MaterialCommunityIcons";
 import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
+import PopUp from './popup';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -76,7 +78,10 @@ function MatchCard(props) {
                 color="white"
                 backgroundColor="blue"
                 style={styles.optionImage}
-                onPress={() => {props.show(true)}}
+                onPress={() => {
+                    props.dataSetter(props.data)
+                    props.show(true)
+                }}
                 />         
                 <IconButton
                 icon={props => <Icon name="chat" {...props} />}

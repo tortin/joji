@@ -19,6 +19,7 @@ function MatchScreen() {
     const [matches, setMatches] = useState([])
     const [selfData, setSelfData] = useState()
     const [rooms, setRooms] = useState([])
+    const [popupData, setpopupData] = useState()
 
     useEffect(() => {
         if(isFocused) {
@@ -28,7 +29,7 @@ function MatchScreen() {
 
     useEffect(() => {
         function fetchRooms() {
-            fetch("http://192.168.1.26:4000/api")
+            fetch("http://172.20.10.2:4000/api")
                 .then((res) => res.json())
                 .then((data) => {
                     setRooms(data)
@@ -87,10 +88,13 @@ function MatchScreen() {
                     show={setVisible}
                     room={rooms.filter(room => {
                         return room.users.includes(id) && room.users.includes(profile.id)
-                    })[0]}/>
+                    })[0]}
+                    dataSetter={setpopupData}/>
             ))}
-            <Text>{"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"}</Text>
-            <PopUp style={styles.dialog} visible={visible} dismiss={setVisible}/>
+            <Text>{"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"}</Text>
+            {popupData !== undefined ? 
+            <PopUp visible={visible} dismiss={setVisible} data={popupData} /> :
+            <></>}
         </ScrollView>
     )
 }
@@ -100,9 +104,5 @@ export default MatchScreen;
 const styles = StyleSheet.create({
     container: {
     },
-    dialog: {
-        position: 'fixed',
-        top: 200,
-        left: 100
-    }
+
 })

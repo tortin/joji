@@ -16,7 +16,7 @@ function RegisterScreen () {
     axios.post(`${BASE_URL}/api/user/register/`, {
       "email": email,
       "user_name": username,
-      "password": password,
+      "password": password
     })
     .then((response) => {
       console.log(response)
