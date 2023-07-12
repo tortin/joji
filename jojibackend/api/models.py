@@ -21,10 +21,11 @@ class Profile(models.Model):
 
 class Review(models.Model):
 
-    sender = models.IntegerField(null = True)
+    sender = models.CharField(null = True)
     receiver = models.IntegerField(null = True)
     stars = models.IntegerField(null = True)
     comment = models.TextField(null = True)
+    senderID = models.IntegerField(null = True)
 
 class Offer(models.Model):
 

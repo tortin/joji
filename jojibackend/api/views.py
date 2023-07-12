@@ -27,3 +27,11 @@ class ReviewList(generics.ListCreateAPIView):
 class OfferUpdate(generics.RetrieveUpdateAPIView):
     queryset = Offer.objects.all()
     serializer_class = OfferSerializer
+
+class OfferDelete(generics.RetrieveDestroyAPIView):
+    queryset = Offer.objects.all()
+    serializer_class = OfferSerializer
+
+class ReviewDelete(generics.RetrieveDestroyAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer

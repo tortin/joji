@@ -62,7 +62,8 @@ function MatchCard(props) {
 
     const handleDetailsNavigation = () => {
         navigation.navigate("Details", {
-            data: props.data
+            data: props.data,
+            name: props.selfData.name
         })
     }
 
