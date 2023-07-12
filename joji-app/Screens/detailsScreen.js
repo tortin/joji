@@ -24,6 +24,8 @@ import { AuthContext } from '../context/AuthContext';
 import jwt_decode from 'jwt-decode';
 import { BASE_URL } from "../config";
 import { useIsFocused } from "@react-navigation/native";
+import dummyReviews from "../dummyReviews";
+import Review from "../components/review";
 
 
 function DetailsScreen( {route, navigation}) {
@@ -227,24 +229,11 @@ function DetailsScreen( {route, navigation}) {
                         </Text>
             <Stack fill center spacing={4}>
                  <Badge label= "REVIEW SECTION" color = "pink" style = {{marginTop:50, height:50,width:200,}}/>
-                 <Avatar label="Jowena Pang" autoColor size={35} style ={{marginTop:20, marginRight:300 }  }  />
-                 <Text style = {{marginTop:-40, marginRight:130, fontWeight:"bold"}}>Jowena Pang </Text>
-                 <Rating stars={3.5} maxStars={5} size={30} style = {{marginTop:30}}/>
-                 <Text style = {{marginTop:10,marginLeft:50 ,  width:320}}> " My overall experience with JOJI is really great, because it is user friendly and easy to use"</Text>
-
-                 <Avatar label="Wei Jian" autoColor size={35} style ={{marginTop:50, marginRight:300 }  }  />
-                 <Text style = {{marginTop:-40, marginRight:130, fontWeight:"bold"}}>Low Wei Jian </Text>
-                 <Rating stars={4} maxStars={5} size={30} style = {{marginTop:30}}/>
-                 <Text style = {{marginTop:10,marginLeft:50 ,  width:320}}> " JOJI has really automated some of our company’s processes. We now spend less time doing manual work. "</Text>
-
-
-                 <Avatar label="Annie Wong" autoColor size={35} style ={{marginTop:50, marginRight:300 }  }  />
-                 <Text style = {{marginTop:-40, marginRight:130, fontWeight:"bold"}}>Annie Wong </Text>
-                 <Rating stars={3} maxStars={5} size={30} style = {{marginTop:30}}/>
-                 <Text style = {{marginTop:10,marginLeft:50 ,  width:320}}> " JOJI has helped my child found his perfect match and he managed to score a 90/100 in his recent test"</Text>
-
-    
-
+                 {dummyReviews.map(item => 
+                (
+                    <Review review={item} />
+                )
+            )}
             </Stack>
 
         </ScrollView>
