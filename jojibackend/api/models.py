@@ -31,5 +31,5 @@ class Offer(models.Model):
     sender = models.IntegerField(null = True)
     receiver = models.IntegerField(null = True)
     subject = models.CharField(null = True)
-    price = models.IntegerField(null = True)
+    price = models.CharField(max_length=50, null = True)
     status = models.CharField(max_length=10, choices=(("pending", "pending"), ("accepted", "accepted")), default="pending")

@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Provider,
   Stack,
@@ -18,43 +18,91 @@ import { Image } from "react-native";
 import { StyleSheet } from "react-native";
 import {Badge, Avatar} from "@react-native-material/core";
 import { Rating } from 'react-native-stock-star-rating'
-
+import axios from 'axios';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import jwt_decode from 'jwt-decode';
+import { BASE_URL } from "../config";
+import { useIsFocused } from "@react-navigation/native";
 
 
 function DetailsScreen( {route, navigation}) {
     
 
+    const {token} = useContext(AuthContext);
+    const id = jwt_decode(token).user_id
     const { data } = route.params
-    const [offered, setOffered] = useState(true)
+    const [status, setStatus] = useState(null)
+    const [offered, setOffered] = useState(false)
     const [visible, setVisible] = useState(false)
-    const [offerVisible, setOfferVisible] = useState(true)
-    const [rating,setRating] = React.useState(0);
+    const [offerVisible, setOfferVisible] = useState(false)
+    const [rating, setRating] = useState(0);
+    const [offer, setOffer] = useState(null)
+    const isFocused = useIsFocused()
+    const [reviews, setReviews] = useState([])
+    const [subject, setSubject] = useState("")
+    const [price, setPrice] = useState("")
 
-    const handleSubmit = () => {
-        if (offered) {
-            // display popup to accept offer
-            // if accepted, send to backend that offer is accepted
-            // otherwise, send to backend to reset the offer message
-        } else {
-            
-    }};
+    useEffect(() => {
+        fetchData()
+    }, [isFocused])
 
+
+    const fetchData = () => {
+        axios.get(`${BASE_URL}/api/offers/`)
+          .then(response => {
+            dummy = response.data.filter(item => {
+                return item.sender === data.id && item.receiver === id
+            })
+            if (dummy.length !== 0) {
+                setOffer(dummy[0])
+                setStatus(dummy[0].status)
+                setOffered(true)
+            }
+            console.log(dummy)
+          })
+          .catch(err => {
+          })
+      }
+
+    const handleSend = () => {
+        payload = {
+            sender: id,
+            receiver: data.id,
+            subject: subject,
+            price: price,
+            status: "pending"
+        }
+        console.log(payload)
+        axios.post(`${BASE_URL}/api/offers/`, payload)
+        .then(response => {
+            console.log(response)
+        })
+        .catch(err => {
+            console.error(err)
+        })
+    }
 
     return (
         <Provider>
         <ScrollView>
-        <Button
-            title = "VIEW OFFER"
+        {status !== "accepted" ? <Button
+            title = {offered ? "VIEW OFFER" : "SEND OFFER"}
             style = {{margin:5}}
             onPress = {() => {setOfferVisible(true)}}
-            />
-            <Dialog visible = {offerVisible} onDismiss = {()=> setOfferVisible(true)}>
+            />: <></>}
+            <Dialog visible = {offerVisible} onDismiss = {() => setOfferVisible(false)}>
                 {offered ? 
                 (
                 <View>
                 <DialogHeader title = "OFFER:"/>
                 <DialogContent>
-                <Text> text </Text>
+                {offer !== null ? 
+                (
+                <View>
+                <Text>Subject: {offer.subject}</Text>
+                <Text>Price: {offer.price}</Text>
+                </View>): <></>}
                 <DialogActions>
                     <Button
                     title = "ACCEPT"
@@ -68,24 +116,35 @@ function DetailsScreen( {route, navigation}) {
                     variant = "text"
                     onPress = {()=> setOfferVisible(false)}
                     />
+                    <Button
+                    title = "CANCEL"
+                    compact
+                    variant = "text"
+                    onPress = {()=> setOfferVisible(false)}
+                    />
                 </DialogActions>
             </DialogContent>
             </View>) : (
                 <View>
                 <DialogHeader title = "SEND OFFER"/>
                 <DialogContent>
-                <TextInput label = "Subject:" variant = "standard" />
-                <TextInput label = "Price:" variant = "standard" />
-            
+                <TextInput 
+                    label = "Subject:" 
+                    variant = "standard"
+                    onChangeText={(text) => {setSubject(text)}} />
+                <TextInput 
+                    label = "Price:" 
+                    variant = "standard"
+                    onChangeText={(text) => {setPrice(text)}} />
             <DialogActions>
                     <Button
-                    title = "OK"
+                    title = "SEND"
                     compact
                     variant = "text"
-                    onPress = {()=> setOfferVisible(false)}
+                    onPress = {handleSend}
                     />
                     <Button 
-                    title = "CANCEL"
+                    title = "CLOSE"
                     compact 
                     variant = "text"
                     onPress = {()=> setOfferVisible(false)}
@@ -96,11 +155,11 @@ function DetailsScreen( {route, navigation}) {
             </View>) 
             }
             </Dialog>
-            <Button
+            {status === "accepted" ? <Button
             title = "LEAVE REVIEW"
             style = {{margin:5}}
             onPress = {()=> setVisible(true)}
-            />
+            />: <></>}
             <Dialog visible = {visible} onDismiss = {()=> setVisible(false)}>
                 <DialogHeader title = "REVIEW"/>
             <DialogContent>
@@ -218,19 +277,6 @@ const styles = StyleSheet.create({
         width:200,
         marginLeft:100,
         fontWeight: "bold",
-    
-    
-
-
-
-       
-    
-
-
-
-        
-        
-
     },
 }
 )

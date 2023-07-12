@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ProfileDetail, ProfileList, ProfileUpdate, OfferList, ReviewList
+from .views import ProfileDetail, ProfileList, ProfileUpdate, OfferList, ReviewList, OfferUpdate
 
 app_name = 'joji_api'
 
@@ -8,5 +8,6 @@ urlpatterns = [
     path('', ProfileList.as_view(), name="listcreate"),
     path('update/<int:pk>/', ProfileUpdate.as_view(), name="update"),
     path('reviews/', ReviewList.as_view()),
-    path('offers/', OfferList.as_view())
+    path('offers/', OfferList.as_view()),
+    path('offers/<int:pk>', OfferUpdate.as_view())
 ]
