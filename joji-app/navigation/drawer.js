@@ -14,6 +14,8 @@ function MainDrawer() {
             <Drawer.Screen name="Matches" component={MatchStack} />
             <Drawer.Screen name="Profile" component={ProfileScreen} />
             <Drawer.Screen name="Settings" component={SettingsScreen} />
+           
+
         </Drawer.Navigator>
     )
 }

@@ -60,6 +60,12 @@ function MatchCard(props) {
         })
     }
 
+    const handleDetailsNavigation = () => {
+        navigation.navigate("Details", {
+            data: props.data
+        })
+    }
+
     return (
         <View style={styles.container}>
             <Image style={styles.image} source={{uri: `${props.data.image}`}} />
@@ -78,10 +84,7 @@ function MatchCard(props) {
                 color="white"
                 backgroundColor="blue"
                 style={styles.optionImage}
-                onPress={() => {
-                    props.dataSetter(props.data)
-                    props.show(true)
-                }}
+                onPress={handleDetailsNavigation}
                 />         
                 <IconButton
                 icon={props => <Icon name="chat" {...props} />}

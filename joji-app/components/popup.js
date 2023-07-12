@@ -1,7 +1,6 @@
 import { StyleSheet, View, Dimensions, Image, Pressable, IconName } from "react-native";
 import React, {useState} from "react";
 import { Provider, Button, Dialog , DialogHeader, DialogActions,DialogContent, Text, Avatar } from "@react-native-material/core";
-import { Icon } from "@react-native-material/core";
 
 const PopUp = (props) => {
     return (
@@ -28,11 +27,11 @@ const PopUp = (props) => {
                         </Text>
                         <Text style = {{fontWeight:'bold', marginLeft:-10, marginTop:10}}>Subjects:</Text>
                         {props.data.subjects.map((item, i) => (
-                            <Text style={{marginLeft: -10}}>{item} key={i}</Text>
+                            <Text style={{marginLeft: -10}} key={i}>{item}</Text>
                         ))}
                         <Text style = {{fontWeight:'bold', marginLeft:-10, marginTop:10}}>Locations:</Text>
                         {props.data.locations.map((item, i) => (
-                            <Text style={{marginLeft: -10}}>{item}, key={i}</Text>
+                            <Text style={{marginLeft: -10}} key={i}>{item}</Text>
                         ))}
                         <Text style={styles.card}>
                             <Text style = {{fontWeight: "bold"}}>Remarks: </Text>
