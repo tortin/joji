@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .models import Profile
-from .serializers import ProfileSerializer
+from .models import Profile, Offer, Review
+from .serializers import ProfileSerializer, OfferSerializer, ReviewSerializer
 
 # Create your views here.
 class ProfileList(generics.ListCreateAPIView):
@@ -15,3 +15,11 @@ class ProfileDetail(generics.RetrieveDestroyAPIView):
 class ProfileUpdate(generics.RetrieveUpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+
+class OfferList(generics.ListCreateAPIView):
+    queryset = Offer.objects.all()
+    serializer_class = OfferSerializer
+
+class ReviewList(generics.ListCreateAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer

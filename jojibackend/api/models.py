@@ -18,3 +18,18 @@ class Profile(models.Model):
     rejects = ArrayField(models.IntegerField(), default = list, blank = True)
     image = models.ImageField(upload_to='profile_pic', default='profile_pic/default.jpg')
     likes = ArrayField(models.IntegerField(), default = list, blank = True)
+
+class Review(models.Model):
+
+    sender = models.IntegerField(null = True)
+    receiver = models.IntegerField(null = True)
+    stars = models.IntegerField(null = True)
+    comment = models.TextField(null = True)
+
+class Offer(models.Model):
+
+    sender = models.IntegerField(null = True)
+    receiver = models.IntegerField(null = True)
+    subject = models.CharField(null = True)
+    price = models.IntegerField(null = True)
+    status = models.CharField(max_length=10, choices=(("pending", "pending"), ("accepted", "accepted")), default="pending")
